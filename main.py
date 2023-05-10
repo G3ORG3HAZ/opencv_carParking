@@ -2,6 +2,8 @@ import cv2
 import pickle
 import cvzone
 import numpy as np
+import threading
+import time
 
 # Video feed
 cap = cv2.VideoCapture('carPark.mp4')
@@ -9,27 +11,61 @@ cap = cv2.VideoCapture('carPark.mp4')
 with open('CarParkPos', 'rb') as f:
     posList = pickle.load(f)
 
+#get the size of the list the holds the x,y values of each parking space
+# the index in the list represents the place of the parking spot    
+list_size = len(posList)
+
+#false meaning occupied while true means that it is available
+boolean_list = [False for _ in range(list_size)]
+
+print(boolean_list)
+
+
 width, height = 107, 48
+
+
+def task():
+    while True:
+        # Your code here
+        print("print boolean list")
+        for index, item in enumerate(boolean_list):
+            if item:
+                print(f'\033[1;32m{index}: True\033[0m')  # Green color for True
+            else:
+                print(f'\033[1;31m{index}: False\033[0m')  # Red color for False
+        time.sleep(5)
+        print("\n" * 5)
+
+
+
+        
+thread = threading.Thread(target=task)
+thread.start()
+
+
+
 
 
 def checkParkingSpace(imgPro):
     spaceCounter = 0#initilizes a counter for the number of free parking spaces
 
-    for pos in posList:#iterates over each parking space
+    for index, pos in enumerate(posList):#iterates over each parking space
         x, y = pos#extracts the x and y coordinates of the top-left corner of the parking space
 
         imgCrop = imgPro[y:y + height, x:x + width]#crops the input image to the size of the parking space
         # cv2.imshow(str(x * y), imgCrop)
         count = cv2.countNonZero(imgCrop)#counts the number of non-zero (white) pixels in the cropped image
 
-
+        #less than 900 meaning it is empty spot
         if count < 900:# Checks if the count of non-zero pixels is less than a certain threshold (900 in this case).
             color = (0, 255, 0)
             thickness = 5
             spaceCounter += 1
+            boolean_list[index] = True
         else:
             color = (0, 0, 255)
             thickness = 2
+            boolean_list[index] = False
 
         cv2.rectangle(img, pos, (pos[0] + width, pos[1] + height), color, thickness)
         cvzone.putTextRect(img, str(count), (x, y + height - 3), scale=1,
@@ -55,3 +91,8 @@ while True:
     # cv2.imshow("ImageBlur", imgBlur)
     # cv2.imshow("ImageThres", imgMedian)
     cv2.waitKey(10)
+
+
+
+
+
