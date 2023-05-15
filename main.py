@@ -4,7 +4,26 @@ import cvzone
 import numpy as np
 import threading
 import time
+import pyrebase
+import json
+import sys
 
+firebaseConfig = {
+  "apiKey": "AIzaSyDyBg8kvK45j4lkuIWZVXTqvL69XpHqKD8",
+  "authDomain": "iot-smart-parking-system-9215b.firebaseapp.com",
+  "databaseURL": "https://iot-smart-parking-system-9215b-default-rtdb.europe-west1.firebasedatabase.app",
+  "projectId": "iot-smart-parking-system-9215b",
+  "databaseURL": "https://iot-smart-parking-system-9215b-default-rtdb.europe-west1.firebasedatabase.app/",
+  "storageBucket": "iot-smart-parking-system-9215b.appspot.com",
+  "messagingSenderId": "468564902715",
+  "appId": "1:468564902715:web:49786c453cc0c467da2d1e",
+  "measurementId": "G-QK7KT4QQGY"
+}
+
+firebase = pyrebase.initialize_app(firebaseConfig)
+database = firebase.database()
+
+is_running = True
 # Video feed
 cap = cv2.VideoCapture('carPark.mp4')
 
@@ -16,33 +35,30 @@ with open('CarParkPos', 'rb') as f:
 list_size = len(posList)
 
 #false meaning occupied while true means that it is available
-boolean_list = [False for _ in range(list_size)]
+boolean_list = []
 
-print(boolean_list)
-
+#initialize the boolean_list to the corrisponding index of the position list and set all of them to None
+for index, spot in enumerate(posList):
+    boolean_list.append({"index": index, "state": None})
+    database.child("data").child(index).set({"index":index,"state": None})
+#json_data = json.dumps(boolean_list)
 
 width, height = 107, 48
 
 
-def task():
-    while True:
-        # Your code here
-        print("print boolean list")
-        for index, item in enumerate(boolean_list):
-            if item:
-                print(f'\033[1;32m{index}: True\033[0m')  # Green color for True
-            else:
-                print(f'\033[1;31m{index}: False\033[0m')  # Red color for False
-        time.sleep(5)
-        print("\n" * 5)
 
 
+def update_firebase():
+    #time.sleep(10)
+    while is_running:
+        for index, spot in enumerate(boolean_list):
+            database.child("data").child(index).update({"state":boolean_list[index]["state"]})
+        print("firebase updated\n")
+        time.sleep(10)
 
-        
-thread = threading.Thread(target=task)
-thread.start()
-
-
+firebase_thread = threading.Thread(target=update_firebase)
+firebase_thread.daemon = True
+firebase_thread.start()
 
 
 
@@ -61,11 +77,16 @@ def checkParkingSpace(imgPro):
             color = (0, 255, 0)
             thickness = 5
             spaceCounter += 1
-            boolean_list[index] = True
+            #boolean_list.append({"index": index, "state": True})
+            boolean_list[index]["state"] = True
+            #database.child("data").child(index)
+            #database.child("data").child(index).update({"state":True})
         else:
             color = (0, 0, 255)
             thickness = 2
-            boolean_list[index] = False
+            #boolean_list.append({"index": index, "state": False})
+            boolean_list[index]["state"] = False
+            #database.child("data").child(index).update({"state":False})
 
         cv2.rectangle(img, pos, (pos[0] + width, pos[1] + height), color, thickness)
         cvzone.putTextRect(img, str(count), (x, y + height - 3), scale=1,
@@ -73,6 +94,12 @@ def checkParkingSpace(imgPro):
 
     cvzone.putTextRect(img, f'Free: {spaceCounter}/{len(posList)}', (100, 50), scale=3,
                            thickness=5, offset=20, colorR=(0,200,0))
+    
+    # for index, spot in enumerate(boolean_list):
+    #     database.child("data").child(index).update({"state":boolean_list[index]["state"]})
+    # print("firebase updated\n")
+    # # time.sleep(10)
+
 while True:
 
     if cap.get(cv2.CAP_PROP_POS_FRAMES) == cap.get(cv2.CAP_PROP_FRAME_COUNT):
@@ -91,8 +118,7 @@ while True:
     # cv2.imshow("ImageBlur", imgBlur)
     # cv2.imshow("ImageThres", imgMedian)
     cv2.waitKey(10)
-
-
+    
 
 
 
