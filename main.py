@@ -5,8 +5,6 @@ import numpy as np
 import threading
 import time
 import pyrebase
-import json
-import sys
 
 firebaseConfig = {
   "apiKey": "AIzaSyDyBg8kvK45j4lkuIWZVXTqvL69XpHqKD8",
@@ -23,7 +21,6 @@ firebaseConfig = {
 firebase = pyrebase.initialize_app(firebaseConfig)
 database = firebase.database()
 
-is_running = True
 # Video feed
 cap = cv2.VideoCapture('carPark.mp4')
 
@@ -45,12 +42,9 @@ for index, spot in enumerate(posList):
 
 width, height = 107, 48
 
-
-
-
 def update_firebase():
     #time.sleep(10)
-    while is_running:
+    while True:
         for index, spot in enumerate(boolean_list):
             database.child("data").child(index).update({"state":boolean_list[index]["state"]})
         print("firebase updated\n")
@@ -118,7 +112,3 @@ while True:
     # cv2.imshow("ImageBlur", imgBlur)
     # cv2.imshow("ImageThres", imgMedian)
     cv2.waitKey(10)
-    
-
-
-
