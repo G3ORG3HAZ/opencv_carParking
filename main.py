@@ -7,15 +7,15 @@ import time
 import pyrebase
 
 firebaseConfig = {
-  "apiKey": "AIzaSyDyBg8kvK45j4lkuIWZVXTqvL69XpHqKD8",
-  "authDomain": "iot-smart-parking-system-9215b.firebaseapp.com",
-  "databaseURL": "https://iot-smart-parking-system-9215b-default-rtdb.europe-west1.firebasedatabase.app",
-  "projectId": "iot-smart-parking-system-9215b",
-  "databaseURL": "https://iot-smart-parking-system-9215b-default-rtdb.europe-west1.firebasedatabase.app/",
-  "storageBucket": "iot-smart-parking-system-9215b.appspot.com",
-  "messagingSenderId": "468564902715",
-  "appId": "1:468564902715:web:49786c453cc0c467da2d1e",
-  "measurementId": "G-QK7KT4QQGY"
+  "apiKey": "AIzaSyCabVM2KN-lnk1ajd3aFQt4r3l2p3AMNzU",
+  "authDomain": "iot-parking-system-c9d2a.firebaseapp.com",
+  "databaseURL": "https://iot-parking-system-c9d2a-default-rtdb.europe-west1.firebasedatabase.app",
+  "projectId": "iot-parking-system-c9d2a",
+  "databaseURL": "https://iot-parking-system-c9d2a-default-rtdb.europe-west1.firebasedatabase.app/",
+  "storageBucket": "iot-parking-system-c9d2a.appspot.com",
+  "messagingSenderId": "105076954508",
+  "appId": "1:105076954508:web:34ff3e219a97cefe04f2a9",
+  "measurementId": "G-LT0J0WKTWT"
 }
 
 firebase = pyrebase.initialize_app(firebaseConfig)
