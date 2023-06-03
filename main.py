@@ -1,6 +1,6 @@
 import cv2
 import pickle
-import cvzone
+#import cvzone
 import numpy as np
 import threading
 import time
@@ -83,11 +83,11 @@ def checkParkingSpace(imgPro):
             #database.child("data").child(index).update({"state":False})
 
         cv2.rectangle(img, pos, (pos[0] + width, pos[1] + height), color, thickness)
-        cvzone.putTextRect(img, str(count), (x, y + height - 3), scale=1,
-                           thickness=2, offset=0, colorR=color)
+        #cvzone.putTextRect(img, str(count), (x, y + height - 3), scale=1,
+        #                  thickness=2, offset=0, colorR=color)
 
-    cvzone.putTextRect(img, f'Free: {spaceCounter}/{len(posList)}', (100, 50), scale=3,
-                           thickness=5, offset=20, colorR=(0,200,0))
+    #cvzone.putTextRect(img, f'Free: {spaceCounter}/{len(posList)}', (100, 50), scale=3,
+    #                      thickness=5, offset=20, colorR=(0,200,0))
     
     # for index, spot in enumerate(boolean_list):
     #     database.child("data").child(index).update({"state":boolean_list[index]["state"]})
