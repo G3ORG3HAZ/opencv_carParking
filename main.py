@@ -1,10 +1,15 @@
 import cv2
 import pickle
-#import cvzone
+import cvzone
 import numpy as np
 import threading
 import time
 import pyrebase
+
+font = cv2.FONT_HERSHEY_SIMPLEX
+font_scale = 0.8
+color = (255, 255, 255)
+thickness = 1
 
 firebaseConfig = {
   "apiKey": "AIzaSyCabVM2KN-lnk1ajd3aFQt4r3l2p3AMNzU",
@@ -37,16 +42,15 @@ boolean_list = []
 #initialize the boolean_list to the corrisponding index of the position list and set all of them to None
 for index, spot in enumerate(posList):
     boolean_list.append({"index": index, "state": None})
-    database.child("Adab").child(index).set({"index":index,"state": None})
+    database.child("data").child(index).set({"index":index,"state": None})
 #json_data = json.dumps(boolean_list)
 
 width, height = 107, 48
-
 def update_firebase():
     #time.sleep(10)
     while True:
         for index, spot in enumerate(boolean_list):
-            database.child("data").child(index).update({"state":boolean_list[index]["state"]})
+            database.child("IT").child(index).update({"state":boolean_list[index]["state"]})
         print("firebase updated\n")
         time.sleep(10)
 
@@ -83,11 +87,18 @@ def checkParkingSpace(imgPro):
             #database.child("data").child(index).update({"state":False})
 
         cv2.rectangle(img, pos, (pos[0] + width, pos[1] + height), color, thickness)
-        #cvzone.putTextRect(img, str(count), (x, y + height - 3), scale=1,
-        #                  thickness=2, offset=0, colorR=color)
+        # Calculate the position to place the number text
+        text_pos = (pos[0] + 10, pos[1] + height - 10)  # Adjust the position as needed
 
-    #cvzone.putTextRect(img, f'Free: {spaceCounter}/{len(posList)}', (100, 50), scale=3,
-    #                      thickness=5, offset=20, colorR=(0,200,0))
+        # Draw the number attribute on the image
+        string = str(index) +" "+ str(count)
+        cv2.putText(img, str(string), text_pos, font, font_scale, color, thickness)
+        
+        # cvzone.putTextRect(img, str(count), (x, y + height - 3), scale=1,
+        #                    thickness=2, offset=0, colorR=color)
+
+        # cvzone.putTextRect(img, f'Free: {spaceCounter}/{len(posList)}', (100, 50), scale=3,
+        #                    thickness=5, offset=20, colorR=(0,200,0))
     
     # for index, spot in enumerate(boolean_list):
     #     database.child("data").child(index).update({"state":boolean_list[index]["state"]})
