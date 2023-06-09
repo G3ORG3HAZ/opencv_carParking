@@ -1,6 +1,6 @@
 import cv2
 import pickle
-import cvzone
+#import cvzone
 import numpy as np
 import threading
 import time
