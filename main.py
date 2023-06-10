@@ -76,14 +76,14 @@ def checkParkingSpace(imgPro):
             thickness = 5
             spaceCounter += 1
             #boolean_list.append({"index": index, "state": True})
-            boolean_list[index]["state"] = True
+            boolean_list[index]["state"] = False
             #database.child("data").child(index)
             #database.child("data").child(index).update({"state":True})
         else:
             color = (0, 0, 255)
             thickness = 2
             #boolean_list.append({"index": index, "state": False})
-            boolean_list[index]["state"] = False
+            boolean_list[index]["state"] = True
             #database.child("data").child(index).update({"state":False})
 
         cv2.rectangle(img, pos, (pos[0] + width, pos[1] + height), color, thickness)
