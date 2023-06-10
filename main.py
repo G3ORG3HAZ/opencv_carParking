@@ -41,8 +41,8 @@ boolean_list = []
 
 #initialize the boolean_list to the corrisponding index of the position list and set all of them to None
 for index, spot in enumerate(posList):
-    boolean_list.append({"index": index, "state": None})
-    database.child("data").child(index).set({"index":index,"state": None})
+    boolean_list.append({"index": index, "state": False})
+    database.child("IT").child(index).set({"index":index,"state": False})
 #json_data = json.dumps(boolean_list)
 
 width, height = 107, 48
